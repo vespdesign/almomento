@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Evento extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'titulo', 
+        'descripcion', 
+        'latitud', 
+        'longitud', 
+        'tiempo_expiracion'
+    ];
+
+    public static function rules()
+    {
+        return [
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'latitud' => 'required|numeric',
+            'longitud' => 'required|numeric',
+            'tiempo_expiracion' => 'required|date',
+        ];
+    }
+}

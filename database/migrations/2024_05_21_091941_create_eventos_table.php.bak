@@ -1,0 +1,14 @@
+<?php
+
+public function up()
+{
+    Schema::create('eventos', function (Blueprint $table) {
+        $table->id();
+        $table->string('titulo');
+        $table->text('descripcion');
+        $table->decimal('latitud', 10, 8);
+        $table->decimal('longitud', 11, 8);
+        $table->timestamp('tiempo_expiracion');
+        $table->timestamps();
+    });
+}
