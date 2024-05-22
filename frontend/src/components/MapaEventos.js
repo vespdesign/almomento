@@ -1,0 +1,69 @@
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import icono from '../assets/icono.png';
+import marcador from '../assets/marcador.png';
+
+const icon = L.icon({
+    iconUrl: icono,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+});
+
+const eventoIcon = L.icon({
+    iconUrl: marcador,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+});
+
+const MapaEventos = ({ eventos, latitud, longitud, onMarkerDragEnd, initialPosition }) => {
+    const [position, setPosition] = useState(initialPosition);
+
+    useEffect(() => {
+        if (latitud !== null && longitud !== null) {
+            setPosition([latitud, longitud]);
+        }
+    }, [latitud, longitud]);
+
+    useEffect(() => {
+        if (initialPosition[0] !== 0 && initialPosition[1] !== 0) {
+            setPosition(initialPosition);
+        }
+    }, [initialPosition]);
+
+    const handleMarkerDragEnd = (event) => {
+        const marker = event.target;
+        const newPosition = marker.getLatLng();
+        setPosition([newPosition.lat, newPosition.lng]);
+        onMarkerDragEnd(newPosition.lat, newPosition.lng);
+    };
+
+    return (
+        <MapContainer center={position} zoom={15} style={{ height: '500px', width: '100%' }}>
+            <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
+            />
+            <Marker
+                position={position}
+                icon={icon}
+                draggable={true}
+                eventHandlers={{ dragend: handleMarkerDragEnd }}
+            />
+            {eventos.map((evento) => (
+                <Marker key={evento.id} position={[evento.latitud, evento.longitud]} icon={eventoIcon}>
+                    <Popup>
+                        <div>
+                            <h3>{evento.titulo}</h3>
+                            <p>{evento.descripcion}</p>
+                            <p>{new Date(evento.tiempo_expiracion).toLocaleString()}</p>
+                        </div>
+                    </Popup>
+                </Marker>
+            ))}
+        </MapContainer>
+    );
+};
+
+export default MapaEventos;
